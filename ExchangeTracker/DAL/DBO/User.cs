@@ -23,6 +23,8 @@ namespace ExchangeTracker.DAL.DBO
         [Required]
         [Column(TypeName = "date")]
         public DateTime Created_At { get; set; }
+        [Column(TypeName = "int")]
+        public bool Verified { get; set; }
         public ICollection<CurrencyTrack> Tracks { get; set; }
 
     }

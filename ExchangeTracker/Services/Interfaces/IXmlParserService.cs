@@ -7,8 +7,8 @@ namespace ExchangeTracker.Services.Interfaces
 {
     public interface IXmlParserService
     {
-        Task<bool> UpdateCurrencyRatesAsync(string xmlContent);
+        Task<bool> UpdateCurrencyRatesAsync();
         Task<bool> CreateCurrencyEntryAsync(CurrencyEntry entry);
-
+        
     }
 }

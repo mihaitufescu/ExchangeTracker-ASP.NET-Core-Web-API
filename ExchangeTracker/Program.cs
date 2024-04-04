@@ -7,7 +7,7 @@ using Hangfire;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 builder.Services.AddControllers();
 
@@ -26,7 +26,14 @@ builder.Services.AddScoped<ICurrencyEntryService, CurrencyEntryService>();
 
 builder.Services.AddScoped<IXmlParserService, XmlParserService>();
 
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost:3000");
+                      });
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -59,5 +66,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.UseHangfireDashboard("/Hangfire");
-
+RecurringJob.AddOrUpdate<IXmlParserService>("UpdateCurrencyRatesJob", x => x.UpdateCurrencyRatesAsync(), Cron.Daily(10));
 app.Run();

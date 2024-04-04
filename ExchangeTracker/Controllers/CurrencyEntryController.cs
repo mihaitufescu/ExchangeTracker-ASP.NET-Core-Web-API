@@ -48,41 +48,5 @@ namespace ExchangeTracker.Controllers
             }
             return Ok(value);
         }
-        /*
-        [HttpPost("[action]")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
-        public IActionResult CreateCurrencyEntry([FromBody] CurrencyEntry currencyEntry)
-        {
-            if(currencyEntry == null)
-            {
-                return BadRequest(ModelState);
-            }
-            var _currencyEntry = currencyEntryRepository.GetCurrencyEntries()
-                .Where(p => p.Date == currencyEntry.Date);
-            if(_currencyEntry == null)
-            {
-                ModelState.AddModelError("", "Currency entry already exists");
-                return StatusCode(422, ModelState);
-            }
-            currencyEntry.Date = DateTime.Now.Date;
-            var existingEntry = currencyEntryRepository.GetCurrencyEntries()
-                .FirstOrDefault(p => p.Date == currencyEntry.Date);
-
-            if (existingEntry != null)
-            {
-                ModelState.AddModelError("", "Currency entry already exists for this date");
-                return StatusCode(422, ModelState);
-            }
-            var currency = currencyEntryRepository.GetAssociatedCurrency(currencyEntry.Id_Currency);
-            currencyEntry.Currency = currency;
-            var currencyEntryMap = mapper.Map<CurrencyEntry>(currencyEntry);
-            if (!currencyEntryRepository.CreateCurrencyEntry(currencyEntryMap))
-            {
-                ModelState.AddModelError("", "Something went wrong while adding the currency entry");
-                return StatusCode(500, ModelState);
-            }
-            return Ok("Succesful!");
-        } */
     }
 }

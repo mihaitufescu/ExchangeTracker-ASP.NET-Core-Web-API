@@ -17,10 +17,6 @@ namespace ExchangeTracker.DAL.Repository
         {
             return context.CurrencyEntry.OrderBy(p => p.Value).ToList();
         }
-        public Currency GetAssociatedCurrency(int currencyId)
-        {
-            return context.Currency.FirstOrDefault(p => p.Id == currencyId);
-        }
         public bool CreateCurrencyEntry(CurrencyEntry currencyEntry)
         {
             context.CurrencyEntry.Add(currencyEntry);

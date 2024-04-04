@@ -3,6 +3,7 @@ using ExchangeTracker.DAL.Repository;
 using ExchangeTracker.DAL.Repository.Interfaces;
 using ExchangeTracker.Models;
 using ExchangeTracker.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ExchangeTracker.Services
 {
@@ -28,5 +29,6 @@ namespace ExchangeTracker.Services
             decimal currencyValue = GetAllCurrencyEntries().Find(x => x.Id_Currency == id).Value;
             return currencyValue;
         }
+        
     }
 }

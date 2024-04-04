@@ -6,7 +6,6 @@ namespace ExchangeTracker.DAL.Repository.Interfaces
     {
         List<CurrencyEntry> GetCurrencyEntries();
         bool CreateCurrencyEntry(CurrencyEntry currencyEntry);
-        Currency GetAssociatedCurrency(int currencyId);
         bool Save();
     }
 }

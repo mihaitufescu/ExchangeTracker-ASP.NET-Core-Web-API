@@ -2,25 +2,33 @@
 using ExchangeTracker.DAL.Repository;
 using ExchangeTracker.DAL.Repository.Interfaces;
 using ExchangeTracker.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
+using Microsoft.Extensions.Configuration;
 using System.Xml.Linq;
 
 namespace ExchangeTracker.Services
 {
     public class XmlParserService : IXmlParserService
     {
-        private readonly ICurrencyRepository currencyRepository;
-        private readonly ICurrencyEntryRepository currencyEntryRepository;
+        private readonly ICurrencyRepository _currencyRepository;
+        private readonly ICurrencyEntryRepository _currencyEntryRepository;
+        private readonly HttpClient _client;
+        private readonly string _apiUrl;
 
-        public XmlParserService(ICurrencyRepository currencyRepository,ICurrencyEntryRepository currencyEntryRepository)
+        public XmlParserService(ICurrencyRepository currencyRepository,ICurrencyEntryRepository currencyEntryRepository, IConfiguration configuration, IHttpClientFactory httpClientFactory)
         {
-            this.currencyRepository = currencyRepository;
-            this.currencyEntryRepository = currencyEntryRepository;
+            _currencyRepository = currencyRepository;
+            _currencyEntryRepository = currencyEntryRepository;
+            _apiUrl = configuration["CurrencyApiUrl"];
+            _client = httpClientFactory.CreateClient();
         }
 
-
-        public async Task<bool> UpdateCurrencyRatesAsync(string xmlContent)
+        public async Task<bool> UpdateCurrencyRatesAsync()
         {
+            var response = await _client.GetAsync(_apiUrl);
+            response.EnsureSuccessStatusCode();
+            var xmlContent = await response.Content.ReadAsStringAsync();
             XDocument xmlDoc = XDocument.Parse(xmlContent);
             XNamespace ns = "http://www.bnr.ro/xsd";
             string rateDateStr = xmlDoc.Root.Element(ns + "Header").Element(ns + "PublishingDate").Value;
@@ -34,35 +42,32 @@ namespace ExchangeTracker.Services
             foreach (var rateElement in xmlDoc.Root.Element(ns + "Body").Element(ns + "Cube").Elements(ns + "Rate"))
             {
                 //multiplier value is 100 in all cases
-
-                bool isMultiplied = false; 
                 XAttribute multiplierAttribute = rateElement.Attribute("multiplier");
-                if (multiplierAttribute != null)
-                {
-                    isMultiplied = true; 
-                }
+                bool isMultiplied = multiplierAttribute != null ? true : false;
+         
                 string currencyCode = rateElement.Attribute("currency").Value;
                 decimal exchangeRate = decimal.Parse(rateElement.Value);
-                var currency = currencyRepository.GetCurrencyByAbbreviation(currencyCode);    
-                CurrencyEntry entry = new CurrencyEntry();
-                entry.Currency = currency;
-                entry.Id_Currency = currency.Id;
-                entry.Date = rateDate;
-                entry.Value = exchangeRate;
-                entry.IsMultiplied = isMultiplied;
+                var currency = _currencyRepository.GetCurrencyByAbbreviation(currencyCode);
+                var entry = new CurrencyEntry
+                {
+                    Currency = currency,
+                    Id_Currency = currency.Id,
+                    Date = rateDate,
+                    Value = exchangeRate,
+                    IsMultiplied = isMultiplied
+                };
+
                 tasks.Add(CreateCurrencyEntryAsync(entry));
             }
-
             await Task.WhenAll(tasks);
-
-            return tasks.All(t => t.Result);
+            return tasks.All(t => t.Result);      
         }
 
         public async Task<bool> CreateCurrencyEntryAsync(CurrencyEntry entry)
         {
             try
             {
-                return currencyEntryRepository.CreateCurrencyEntry(entry);
+                return _currencyEntryRepository.CreateCurrencyEntry(entry);
             }
             catch (Exception ex)
             {
