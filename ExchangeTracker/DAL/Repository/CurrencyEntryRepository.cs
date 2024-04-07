@@ -6,25 +6,25 @@ namespace ExchangeTracker.DAL.Repository
 {
     public class CurrencyEntryRepository : ICurrencyEntryRepository
     {
-        private readonly DataContext context;
+        private readonly DataContext _context;
 
         public CurrencyEntryRepository(DataContext context)
         {
-            this.context = context;    
+            _context = context;    
         }
 
         public List<CurrencyEntry> GetCurrencyEntries()
         {
-            return context.CurrencyEntry.OrderBy(p => p.Value).ToList();
+            return _context.CurrencyEntry.OrderBy(p => p.Value).ToList();
         }
         public bool CreateCurrencyEntry(CurrencyEntry currencyEntry)
         {
-            context.CurrencyEntry.Add(currencyEntry);
+            _context.CurrencyEntry.Add(currencyEntry);
             return Save();
         }
         public bool Save()
         {
-            return context.SaveChanges() > 0 ? true : false;
+            return _context.SaveChanges() > 0 ? true : false;
         }
     }
 }

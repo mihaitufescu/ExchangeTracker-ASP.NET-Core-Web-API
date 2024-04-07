@@ -18,7 +18,7 @@ namespace ExchangeTracker.DAL
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
+            //refer to the diagram
             modelBuilder.Entity<User>()
                 .HasMany(e => e.Tracks)
                 .WithOne(e => e.User)

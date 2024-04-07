@@ -6,5 +6,6 @@ namespace ExchangeTracker.Services.Interfaces
     {
         List <CurrencyEntryModel> GetAllCurrencyEntries();
         Decimal GetCurrencyValueById(int id);
+
     }
 }

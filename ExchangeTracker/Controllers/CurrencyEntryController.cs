@@ -14,22 +14,22 @@ namespace ExchangeTracker.Controllers
     [ApiController]
     public class CurrencyEntryController : Controller
     {
-        private readonly IMapper mapper;
-        private readonly ICurrencyEntryService currencyEntryService;
-        private readonly ICurrencyEntryRepository currencyEntryRepository;
+        private readonly IMapper _mapper;
+        private readonly ICurrencyEntryService _currencyEntryService;
+        private readonly ICurrencyEntryRepository _currencyEntryRepository;
 
         public CurrencyEntryController(IMapper mapper, ICurrencyEntryService currencyEntryService,ICurrencyEntryRepository currencyEntryRepository)
         {
-            this.mapper = mapper;
-            this.currencyEntryService = currencyEntryService;
-            this.currencyEntryRepository = currencyEntryRepository;
+            _mapper = mapper;
+            _currencyEntryService = currencyEntryService;
+            _currencyEntryRepository = currencyEntryRepository;
         }
 
         [HttpGet("[action]")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<CurrencyEntryModel>))]
         public IActionResult GetAllCurrencyEntries()
         {
-            var currencyEntries = currencyEntryService.GetAllCurrencyEntries();
+            var currencyEntries = _currencyEntryService.GetAllCurrencyEntries();
 
             if(!ModelState.IsValid)
             {
@@ -41,7 +41,7 @@ namespace ExchangeTracker.Controllers
         [ProducesResponseType(200, Type = typeof(Decimal))]
         public IActionResult GetCurrencyValueById(int id)
         {
-            var value = currencyEntryService.GetCurrencyValueById(id);
+            var value = _currencyEntryService.GetCurrencyValueById(id);
             if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

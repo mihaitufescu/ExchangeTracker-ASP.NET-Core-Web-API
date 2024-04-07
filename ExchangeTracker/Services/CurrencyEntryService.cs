@@ -9,18 +9,18 @@ namespace ExchangeTracker.Services
 {
     public class CurrencyEntryService : ICurrencyEntryService
     {
-        private readonly IMapper mapper;
-        private readonly ICurrencyEntryRepository currencyEntryRepository;
+        private readonly IMapper _mapper;
+        private readonly ICurrencyEntryRepository _currencyEntryRepository;
 
         public CurrencyEntryService(IMapper mapper, ICurrencyEntryRepository currencyEntryRepository)
         {
-            this.mapper = mapper;
-            this.currencyEntryRepository = currencyEntryRepository; 
+            _mapper = mapper;
+            _currencyEntryRepository = currencyEntryRepository; 
         }
 
         public List<CurrencyEntryModel> GetAllCurrencyEntries()
         {
-            var currencyEntries = mapper.Map<List<CurrencyEntryModel>>(currencyEntryRepository.GetCurrencyEntries());
+            var currencyEntries = _mapper.Map<List<CurrencyEntryModel>>(_currencyEntryRepository.GetCurrencyEntries());
 
             return currencyEntries;
         }

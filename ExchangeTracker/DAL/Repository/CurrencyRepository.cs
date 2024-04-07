@@ -20,5 +20,9 @@ namespace ExchangeTracker.DAL.Repository
         {
             return context.Currency.FirstOrDefault(p => p.Abbreviation == abbreviation);
         }
+        public Currency GetCurrencyByName(String name) 
+        {
+            return context.Currency.FirstOrDefault(p => p.Name == name);
+        }
     }
 }

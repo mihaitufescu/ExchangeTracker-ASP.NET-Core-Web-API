@@ -6,5 +6,6 @@ namespace ExchangeTracker.DAL.Repository.Interfaces
     {
         List<Currency> GetCurrencies();
         Currency GetCurrencyByAbbreviation(String abbreviation);
+        Currency GetCurrencyByName(String name);
     }
 }

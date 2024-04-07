@@ -6,44 +6,44 @@ namespace ExchangeTracker.DAL.Repository
 {
     public class UserRepository : IUserRepository
     {
-        private readonly DataContext context;
+        private readonly DataContext _context;
 
         public UserRepository(DataContext context)
         {
-            this.context = context;
+            _context = context;
         }
         public List<User> GetUsers()
         {
-            return context.User.OrderBy(p => p.Id).ToList();
+            return _context.User.OrderBy(p => p.Id).ToList();
         }
         public User GetUserById(int id)
         {
-            return context.User.Find(id);
+            return _context.User.Find(id);
         }
 
         public User GetUserByName(string name)
         {
-            return context.User.FirstOrDefault(p => p.Name.Trim().ToUpper() == name.Trim().ToUpper());
+            return _context.User.FirstOrDefault(p => p.Name.Trim().ToUpper() == name.Trim().ToUpper());
         }
         public bool CreateUser(User user)
         {
-            context.User.Add(user);
+            _context.User.Add(user);
             return Save();
         }
 
         public bool UpdateUserPassword(int id, string password)
         {
-            var user = context.User.Find(id);
+            var user = _context.User.Find(id);
             if (user == null)
             {
                 return false;
             }
-            user.Password = password;
+            user.Password = BCrypt.Net.BCrypt.HashPassword(password);
             return Save();
         }
         public bool Save()
         {
-            var saved = context.SaveChanges();
+            var saved = _context.SaveChanges();
             return saved > 0 ? true : false;
         }
     }

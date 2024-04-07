@@ -10,17 +10,17 @@ namespace ExchangeTracker.Controllers
     [ApiController]
     public class CurrencyController : Controller
     {
-        private readonly ICurrencyService currencyService;
+        private readonly ICurrencyService _currencyService;
 
         public CurrencyController(ICurrencyService currencyService)
         {
-            this.currencyService = currencyService;
+            _currencyService = currencyService;
         }
 
         [HttpGet("[action]")]
         [ProducesResponseType(200, Type= typeof(IEnumerable<CurrencyModel>))]
         public IActionResult GetCurrencies() {
-            var currencies =  currencyService.GetAllCurrencies();
+            var currencies =  _currencyService.GetAllCurrencies();
 
             if (!ModelState.IsValid)
             {
@@ -33,7 +33,20 @@ namespace ExchangeTracker.Controllers
         [ProducesResponseType(200, Type = typeof(IEnumerable<CurrencyModel>))]
         public IActionResult GetCurrencyByAbbreviation(String abbreviation)
         {
-            var currency = currencyService.GetCurrencyByAbbreviation(abbreviation);
+            var currency = _currencyService.GetCurrencyByAbbreviation(abbreviation);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(currency);
+        }
+        [HttpGet("[action]")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<CurrencyModel>))]
+        public IActionResult GetCurrencyByName(String name)
+        {
+            var currency = _currencyService.GetCurrencyByName(name);
 
             if (!ModelState.IsValid)
             {

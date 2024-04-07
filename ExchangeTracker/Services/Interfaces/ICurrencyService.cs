@@ -7,5 +7,6 @@ namespace ExchangeTracker.Services.Interfaces
     {
         List <CurrencyModel> GetAllCurrencies();
         CurrencyModel GetCurrencyByAbbreviation(String abbreviation);
+        CurrencyModel GetCurrencyByName(String name);
     }
 }

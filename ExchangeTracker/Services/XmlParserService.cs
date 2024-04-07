@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Globalization;
 using Microsoft.Extensions.Configuration;
 using System.Xml.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace ExchangeTracker.Services
 {
@@ -13,13 +14,15 @@ namespace ExchangeTracker.Services
     {
         private readonly ICurrencyRepository _currencyRepository;
         private readonly ICurrencyEntryRepository _currencyEntryRepository;
+        private readonly ILogger<XmlParserService> _logger;
         private readonly HttpClient _client;
         private readonly string _apiUrl;
 
-        public XmlParserService(ICurrencyRepository currencyRepository,ICurrencyEntryRepository currencyEntryRepository, IConfiguration configuration, IHttpClientFactory httpClientFactory)
+        public XmlParserService(ICurrencyRepository currencyRepository,ICurrencyEntryRepository currencyEntryRepository, ILogger<XmlParserService> logger, IConfiguration configuration, IHttpClientFactory httpClientFactory)
         {
             _currencyRepository = currencyRepository;
             _currencyEntryRepository = currencyEntryRepository;
+            _logger = logger;
             _apiUrl = configuration["CurrencyApiUrl"];
             _client = httpClientFactory.CreateClient();
         }
@@ -28,6 +31,9 @@ namespace ExchangeTracker.Services
         {
             var response = await _client.GetAsync(_apiUrl);
             response.EnsureSuccessStatusCode();
+
+            _logger.LogInformation("Currency update was triggered with status code: ",response.StatusCode);
+
             var xmlContent = await response.Content.ReadAsStringAsync();
             XDocument xmlDoc = XDocument.Parse(xmlContent);
             XNamespace ns = "http://www.bnr.ro/xsd";
@@ -71,6 +77,7 @@ namespace ExchangeTracker.Services
             }
             catch (Exception ex)
             {
+                _logger.LogError("There was an error while adding the entry: ", entry.Id);
                 return false;
             }
         }

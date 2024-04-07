@@ -7,6 +7,9 @@ using Hangfire;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Logging.ClearProviders().AddConsole();
+
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 builder.Services.AddControllers();
@@ -57,14 +60,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Currency rates API");
     });
 }
 
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.UseCors(MyAllowSpecificOrigins);
 app.UseHangfireDashboard("/Hangfire");
-RecurringJob.AddOrUpdate<IXmlParserService>("UpdateCurrencyRatesJob", x => x.UpdateCurrencyRatesAsync(), Cron.Daily(10));
+RecurringJob.AddOrUpdate<IXmlParserService>("UpdateCurrencyRatesJob", x => x.UpdateCurrencyRatesAsync(), "0 10 * * 1-5");
 app.Run();

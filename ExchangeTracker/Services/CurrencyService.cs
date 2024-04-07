@@ -30,5 +30,11 @@ namespace ExchangeTracker.Services
 
             return currency;
         }
+        public CurrencyModel GetCurrencyByName(String name)
+        {
+            var currency = mapper.Map<CurrencyModel>(currencyRepository.GetCurrencyByName(name));
+
+            return currency;
+        }
     }
 }
