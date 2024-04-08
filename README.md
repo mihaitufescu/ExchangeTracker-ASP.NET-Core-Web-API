@@ -14,7 +14,7 @@ Swagger documentation and environment for testing and development.
 
 Usage of Entity Framework (EF) to map domain entities to the underlying SQL Server database, providing seamless interaction between the application's object-oriented model and the relational database. 
 
-<img src="https://github.com/mihaitufescu/ExchangeTracker/blob/master/Media/DATABASE_DIAGRAM.png" style = "width : 800px; height : auto;" alt="Diagram">
+<img src="https://github.com/mihaitufescu/ExchangeTracker/blob/master/Media/DATABASE_DIAGRAM.png" style = "width : 1000px; height : auto;" alt="Diagram">
 
 ### AutoMapper 🚀
 
